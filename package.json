@@ -1,0 +1,9 @@
+{
+  "main": "index.js",
+  "name": "seather-gui",
+  "version": "0.1.0",
+  "dependencies": {
+    "electron": "^2.0.2"
+  },
+  "author": "Scott Lindh"
+}

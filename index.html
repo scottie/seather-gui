@@ -1,0 +1,130 @@
+
+<!doctype html>
+
+<html>
+
+  <head>
+      <title> Seather Encrypt/Decryptor Uploader </title>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+      
+      <script>
+
+          var ipc = require('electron').ipcRenderer; 
+          var remote = require('electron').remote;
+          var bdialog = require('electron').remote.dialog 
+
+          //console.log(ipc.sendSync('synchronous-message', 'ping')); // prints "pong"
+
+          ipc.on('response', function(result) {
+            console.log(result);
+            alert(result);
+          });
+
+          var ssync = function(enctype) {
+              var field = document.getElementById("encfilename");
+              var fname = field.value;
+              var pfield = document.getElementById("password");
+              var passwd = pfield.value;
+              var sfields = {};
+              sfields["filename"] = fname;
+              sfields["password"] = passwd;
+
+              if(enctype === "encrypt") {
+                var result = ipc.sendSync('encrypt', sfields );
+                alert(result);
+              }
+              else if(enctype === "decrypt") {
+                var result = ipc.sendSync('decrypt', sfields );
+                alert(result);
+              }
+
+          }
+
+          var showDialog = function() {
+
+            bdialog.showOpenDialog({ properties: [ 'openFile']}, function(filenames){
+                var fname = filenames[0];
+                if(fname != null && fname != undefined) {
+                  console.log("Filename for encrypt/decrypt ::"+ fname);
+                  var field = document.getElementById("encfilename");
+                  field.value = fname;
+                }
+            });
+
+          }
+
+
+      </script>
+  </head>
+
+  <body>
+
+      <div class="container">
+
+        <div class="row">
+              <div class="panel panel-info col-md-6">
+              <div class="panel-heading"><h3>Seather Uploader v0.1.0 </h3></div>
+              <div class="panel-body">
+
+                <div class="input-group input-group-lg">
+
+                  <div class="input-group input-group-lg">
+                    <input type="text" id="encfilename" class=" form-control">
+                    <span class="input-group-btn">
+                      <button class="btn btn-primary" type="button" onclick="showDialog()">Select File</button>
+                    </span>
+
+                  </div><!-- /input-group -->
+
+                  <div class="input-group input-group-lg">
+                    <span class="passwd input-group-addon" id="sizing-addon1">Password: </span>
+                    <input type="password" id="password" class="form-control">
+                  </div><!-- /input-group -->
+
+
+
+                  <label> <br>
+                  This application encrypts/decrnypts a file encrypts a file and uploads/downloads it to decentralised storage.<br>
+                  
+                  <!-- Field no.1: Input file path, name eg., c:\user\desktop\file.txt <br>
+                  Field no.2: Protect encryption with a password; Same password should be supplied at the
+                  time of decryption.
+
+                  <!--- <br> Encrypt - Select encrypt button (red) to encrypt the file using the password supplied.
+                  <br> Decrypt - select decrypt button (green) to decrypt the file using the password supplied.
+                  <br><br> Note: Another new file with same name shall be created in the same path, with extension .enc (after encryption)
+                  .dec (after decryption); -->
+
+                   </label>
+
+
+                  <div class="btn-group" data-toggle="buttons">
+                    <label class="myencrypt btn btn-warning btn-lg  active" onclick="ssync('encrypt')" >
+                      Start Encryption
+                    </label>
+                    <label class="mydecrypt btn btn-success btn-lg "  onclick="ssync('decrypt')">
+                      Start Decryption
+                    </label>
+                  </div>
+
+                  </div>
+
+                </div>
+
+              </div>
+            </div>
+
+            </div>
+          </div>
+
+
+      </div>
+
+
+    </div>
+
+  </body>
+
+</html>
